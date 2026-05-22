@@ -4,10 +4,10 @@ from stats import update_stats
 from logger import save_log
 from alerts import detect_anomalies
 
-packet_counter = 0
+counter = 0
 
 def process_packet(packet):
-    global packet_counter
+    global counter
 
     try:
         src, dst = get_ip_info(packet)
@@ -16,10 +16,10 @@ def process_packet(packet):
         size = len(packet)
 
         if src and dst:
-            packet_counter += 1
+            counter += 1
 
-            # 🔹 Show only every 20th packet (CONTROLLED OUTPUT)
-            if packet_counter % 20 == 0:
+            # 🔹 Show only every 20th packet (NO SPAM)
+            if counter % 20 == 0:
                 output = format_output(proto, src, dst, sport, dport, size)
 
                 if detect_http(packet):
@@ -31,12 +31,12 @@ def process_packet(packet):
             # 🔹 Always update stats
             update_stats(proto)
 
-            # 🔹 Detect threats
+            # 🔹 Alerts (real-time, not sampled)
             alerts = detect_anomalies(src, dport)
 
             for alert in alerts:
                 print(alert)
                 save_log(alert)
 
-    except Exception as e:
-        print(f"[PROCESS ERROR] {e}")
+    except Exception:
+        pass

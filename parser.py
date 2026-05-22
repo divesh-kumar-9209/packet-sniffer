@@ -24,7 +24,7 @@ def get_ports(packet):
 
 def detect_http(packet):
     if packet.haslayer(Raw):
-        payload = packet[Raw].load
-        if b"HTTP" in payload or b"GET" in payload:
+        load = packet[Raw].load
+        if b"HTTP" in load or b"GET" in load:
             return True
     return False

@@ -1,0 +1,8 @@
+{
+  "threshold": 100,
+  "port_scan_threshold": 10,
+  "time_window": 10,
+  "cooldown": 15,
+  "log_file": "packets.log",
+  "report_file": "report.json"
+}

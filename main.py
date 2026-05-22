@@ -2,7 +2,7 @@ import argparse
 from scapy.all import sniff, get_if_list, get_if_list, get_if_addr
 from sniffer import process_packet
 from stats import print_stats
-from config import DEFAULT_FILTER
+from report import generate_report
 
 def list_interfaces():
     print("\nAvailable Network Interfaces:\n")
@@ -44,7 +44,7 @@ def get_interface_map():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Packet Sniffer v3")
 
-    parser.add_argument("-f", "--filter", default=DEFAULT_FILTER)
+    parser.add_argument("-f", "--filter", default="")
     parser.add_argument("-i", "--interface", help="Network interface to sniff")
     parser.add_argument("--list", action="store_true", help="List interfaces")
 
@@ -65,8 +65,8 @@ if __name__ == "__main__":
                 start_sniffer(selected_iface, args.filter)
 
     except KeyboardInterrupt:
-        print("\n[!] Sniffer stopped by user")
-        print_stats()
+        print("\n[!] Stopping...")
+        generate_report()
 
     except Exception as e:
         print(f"[ERROR] {e}")

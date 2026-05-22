@@ -18,3 +18,6 @@ def print_stats():
     print("\n--- Final Packet Statistics ---")
     for key, value in stats.items():
         print(f"{key}: {value}")
+        
+def get_stats():
+    return stats
