@@ -1,5 +1,5 @@
 from parser import get_ip_info, get_protocol, get_ports, detect_http
-from utils import format_output
+from utils import format_output, format_alert
 from stats import update_stats
 from logger import save_log
 from alerts import detect_anomalies
@@ -18,8 +18,8 @@ def process_packet(packet):
         if src and dst:
             counter += 1
 
-            # 🔹 Show only every 20th packet (NO SPAM)
-            if counter % 20 == 0:
+            # Controlled output
+            if counter % 25 == 0:
                 output = format_output(proto, src, dst, sport, dport, size)
 
                 if detect_http(packet):
@@ -28,15 +28,16 @@ def process_packet(packet):
                 print(output)
                 save_log(output)
 
-            # 🔹 Always update stats
             update_stats(proto)
 
-            # 🔹 Alerts (real-time, not sampled)
             alerts = detect_anomalies(src, dport)
 
-            for alert in alerts:
-                print(alert)
-                save_log(alert)
+            for msg, severity, risk in alerts:
+                alert_line = f"{msg} | Risk Score: {risk}"
+                formatted = format_alert(alert_line, severity)
 
-    except Exception:
+                print(formatted)
+                save_log(alert_line)
+
+    except:
         pass

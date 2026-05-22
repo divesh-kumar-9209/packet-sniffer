@@ -4,7 +4,8 @@ from stats import get_stats
 
 def generate_report():
     report = {
-        "stats": get_stats()
+        "stats": get_stats(),
+        "analysis": "Basic anomaly detection applied (traffic + port behavior)"
     }
 
     with open(REPORT_FILE, "w") as f:
