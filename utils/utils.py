@@ -9,10 +9,10 @@ RESET = "\033[0m"
 def format_output(proto, src, dst, sport, dport, size):
     time = datetime.now().strftime("%H:%M:%S")
 
-    base = f"[{time}] {proto} | {src} → {dst} | {size}B"
+    base = f"[{time}] {proto} | {src} -> {dst} | {size}B"
 
     if sport and dport:
-        base += f" | {sport} → {dport}"
+        base += f" | {sport} -> {dport}"
 
     return base
 
