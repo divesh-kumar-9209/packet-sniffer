@@ -1,43 +1,48 @@
-# 🔍 Packet Sniffer & Mini IDS (Python)
+# Packet Sniffer & Intrusion Detection Tool (Python)
 
-A command-line based packet sniffer and basic Intrusion Detection System (IDS) built using Scapy.
+## Overview
 
-This tool captures live network traffic, analyzes packets, and detects suspicious behavior such as high traffic and potential port scanning.
+This project is a command-line based network packet sniffer with integrated basic Intrusion Detection System (IDS) capabilities. It captures live network traffic, parses protocol-level information, and detects anomalous behavior such as high traffic rates and potential port scanning activity.
 
----
-
-## 🚀 Features
-
-### 🟢 Packet Sniffing
-- Capture live network packets in real-time
-- Supports TCP, UDP, ICMP protocols
-- Extracts IP addresses and ports
-
-### 🟢 CLI Tool
-- Interface selection (`--list`, `-i`)
-- Custom filters (`-f tcp`, `port 80`, etc.)
-- Continuous capture with graceful stop
-
-### 🟢 Output & Logging
-- Structured and readable output
-- Timestamp + packet size
-- Controlled output (reduces spam)
-- Logs saved to file
-
-### 🟢 IDS (Intrusion Detection System) Features
-- Packet rate monitoring
-- Suspicious IP detection
-- Port scan detection
-- Alert system with cooldown (no spam)
-
-### 🟢 Config System
-- All thresholds configurable via `config.json`
-- No hardcoding required
-
-### 🟢 Reporting
-- Generates JSON report on exit
-- Includes packet statistics
+The tool is designed to demonstrate core concepts of network monitoring, packet analysis, and security detection using Python and Scapy.
 
 ---
 
-## 📂 Project Structure
+## Key Capabilities
+
+### Packet Capture & Analysis
+- Real-time packet sniffing using Scapy
+- Supports TCP, UDP, and ICMP protocols
+- Extracts source/destination IPs and port information
+- Displays structured and timestamped output
+
+### Command-Line Interface
+- Interface selection support
+- Berkeley Packet Filter (BPF) support for traffic filtering
+- Continuous capture with graceful termination
+
+### Output & Logging
+- Human-readable packet summaries
+- Controlled output sampling to prevent terminal flooding
+- Persistent logging to file for later inspection
+
+### Intrusion Detection Features
+- Packet rate monitoring per source IP
+- Detection of abnormal traffic spikes
+- Port scan detection based on unique destination ports
+- Alert system with cooldown mechanism to prevent duplicate alerts
+
+### Configuration Management
+- Centralized configuration via `config.json`
+- Adjustable thresholds for detection logic
+- No hardcoded values in detection pipeline
+
+### Reporting
+- Automatic report generation on termination
+- JSON-based report containing traffic statistics
+
+---
+
+## Architecture
+
+The application follows a modular design:
