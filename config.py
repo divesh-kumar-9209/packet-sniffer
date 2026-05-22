@@ -1,0 +1,3 @@
+LOG_FILE = "packets.log"
+DEFAULT_FILTER = ""
+DEFAULT_INTERFACE = None
