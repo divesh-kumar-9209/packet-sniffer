@@ -1,8 +1,8 @@
-from parser import get_ip_info, get_protocol, get_ports, detect_http
-from utils import format_output, format_alert
-from stats import update_stats
-from logger import save_log
-from alerts import detect_anomalies
+from core.parser import get_ip_info, get_protocol, get_ports, detect_http
+from utils.utils import format_output, format_alert
+from core.stats import update_stats
+from utils.logger import save_log
+from detection.alerts import detect_anomalies
 
 counter = 0
 

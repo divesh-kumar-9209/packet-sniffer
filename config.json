@@ -4,5 +4,6 @@
   "time_window": 10,
   "cooldown": 15,
   "log_file": "packets.log",
-  "report_file": "report.json"
+  "report_file": "report.json",
+  "safe_ips": ["142.250.82.252"]
 }

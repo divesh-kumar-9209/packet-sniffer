@@ -1,6 +1,6 @@
 import json
 from config import REPORT_FILE
-from stats import get_stats
+from core.stats import get_stats
 
 def generate_report():
     report = {

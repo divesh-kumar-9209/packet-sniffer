@@ -3,9 +3,12 @@ import json
 with open("config.json") as f:
     config = json.load(f)
 
-THRESHOLD = config["threshold"]
-PORT_SCAN_THRESHOLD = config["port_scan_threshold"]
-TIME_WINDOW = config["time_window"]
-COOLDOWN = config["cooldown"]
-LOG_FILE = config["log_file"]
-REPORT_FILE = config["report_file"]
+THRESHOLD = config.get("threshold", 100)
+PORT_SCAN_THRESHOLD = config.get("port_scan_threshold", 10)
+TIME_WINDOW = config.get("time_window", 10)
+COOLDOWN = config.get("cooldown", 15)
+
+LOG_FILE = config.get("log_file", "packets.log")
+REPORT_FILE = config.get("report_file", "report.json")
+
+SAFE_IPS = config.get("safe_ips", [])
