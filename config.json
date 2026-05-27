@@ -1,8 +1,8 @@
 {
-  "threshold": 100,
-  "port_scan_threshold": 10,
+  "threshold": 20,
+  "port_scan_threshold": 3,
   "time_window": 10,
-  "cooldown": 15,
+  "cooldown": 5,
   "log_file": "packets.log",
   "report_file": "report.json",
   "safe_ips": ["142.250.82.252"]

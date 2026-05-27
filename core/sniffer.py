@@ -6,6 +6,7 @@ from core.stats import update_stats
 from utils.logger import save_log
 from detection.alerts import detect_anomalies
 from config import SAFE_IPS
+from core.stats import increment_alerts
 
 counter = 0
 
@@ -18,7 +19,6 @@ def resolve_hostname(ip):
     try:
         hostname = socket.getfqdn(ip)
 
-        # If hostname not resolved properly
         if hostname == ip:
             return "Unknown"
 
@@ -37,53 +37,66 @@ def process_packet(packet):
         sport, dport = get_ports(packet)
         size = len(packet)
 
-        if src and dst:
+        if not src or not dst:
+            return
 
-            counter += 1
+        # Ignore localhost traffic
+        if src.startswith("127.") or dst.startswith("127."):
+            return
 
-            # Resolve hostname only for external suspicious IPs
-            hostname = ""
+        if src.startswith("224.") or dst.startswith("224."):
+            return
 
-            if (
-                not src.startswith("192.168")
-                and src not in SAFE_IPS
-            ):
-                resolved = resolve_hostname(src)
+        if src.startswith("255.") or dst.startswith("255."):
+            return
 
-                if resolved != "Unknown":
-                    hostname = f" ({resolved})"
+        counter += 1
 
-            # Controlled output
-            if counter % 25 == 0:
+        # Hostname resolution
+        hostname = ""
 
-                output = format_output(
-                    proto,
-                    f"{src}{hostname}",
-                    dst,
-                    sport,
-                    dport,
-                    size
-                )
+        if (
+            not src.startswith("192.168")
+            and src not in SAFE_IPS
+        ):
+            resolved = resolve_hostname(src)
 
-                if detect_http(packet):
-                    output += " | HTTP"
+            if resolved != "Unknown":
+                hostname = f" ({resolved})"
 
-                print(output)
-                save_log(output)
+        # Show every 5th packet
+        if counter % 15 == 0:
 
-            update_stats(proto)
+            output = format_output(
+                proto,
+                f"{src}{hostname}",
+                dst,
+                sport,
+                dport,
+                size
+            )
 
-            alerts = detect_anomalies(src, dport)
+            if detect_http(packet):
+                output += " | HTTP"
 
-            for msg, severity, risk in alerts:
+            print(output)
+            save_log(output)
 
-                formatted = format_alert(msg, severity)
+        update_stats(proto)
 
-                print(formatted)
+        alerts = detect_anomalies(src, dport)
 
-                save_log(
-                    f"{severity} ALERT | {msg} | Risk Score: {risk}"
-                )
+        for msg, severity, risk in alerts:
+            
+            increment_alerts()
+
+            formatted = format_alert(msg, severity)
+
+            print(formatted)
+
+            save_log(
+                f"{severity} ALERT | {msg} | Risk Score: {risk}"
+            )
 
     except Exception as e:
-        print(f"[ERROR] {e}")
+        print(f"[ERROR] Packet processing failed: {e}")
