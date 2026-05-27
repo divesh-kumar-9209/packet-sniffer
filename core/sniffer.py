@@ -64,7 +64,7 @@ def process_packet(packet):
             if resolved != "Unknown":
                 hostname = f" ({resolved})"
 
-        # Show every 5th packet
+
         if counter % 15 == 0:
 
             output = format_output(
