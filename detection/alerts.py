@@ -2,6 +2,10 @@ from collections import defaultdict
 import time
 from config import THRESHOLD, PORT_SCAN_THRESHOLD, TIME_WINDOW, COOLDOWN
 from config import SAFE_IPS
+from colorama import Fore, Style, init
+
+# Initialize colorama
+init(autoreset=True)
 
 ip_packet_count = defaultdict(int)
 ip_port_count = defaultdict(set)
@@ -37,20 +41,47 @@ def get_severity(score):
         return "LOW"
 
 
+def colored_alert(message, severity, risk):
+    """
+    Returns formatted colored alert
+    """
+
+    if severity == "HIGH":
+        return (
+            Fore.RED +
+            f"[HIGH ALERT] {message} | Risk Score: {risk}/100" +
+            Style.RESET_ALL
+        )
+
+    elif severity == "MEDIUM":
+        return (
+            Fore.YELLOW +
+            f"[MEDIUM ALERT] {message} | Risk Score: {risk}/100" +
+            Style.RESET_ALL
+        )
+
+    else:
+        return (
+            Fore.GREEN +
+            f"[LOW ALERT] {message} | Risk Score: {risk}/100" +
+            Style.RESET_ALL
+        )
+
+
 def detect_anomalies(src_ip, dst_port):
     global last_reset
 
     now = time.time()
 
-    # 🔹 Ignore local traffic
+    # Ignore local traffic
     if src_ip.startswith("192.168"):
         return []
 
-    # 🔹 Ignore safe IPs
+    # Ignore safe IPs
     if src_ip in SAFE_IPS:
         return []
 
-    # 🔁 Reset window
+    # Reset window
     if now - last_reset > TIME_WINDOW:
         ip_packet_count.clear()
         ip_port_count.clear()
@@ -68,29 +99,38 @@ def detect_anomalies(src_ip, dst_port):
     risk = ai_risk_score(pkt, ports)
     severity = get_severity(risk)
 
-    # 🚨 Cooldown control
+    # Cooldown control
     if now - last_alert > COOLDOWN:
 
-        # 🔥 Port Scan Detection
+        # Port Scan Detection
         if ports > PORT_SCAN_THRESHOLD:
+
+            msg = f"Port scan detected from {src_ip}"
+
             alerts.append((
-                f"Port scan detected from {src_ip}",
+                colored_alert(msg, "HIGH", risk),
                 "HIGH",
                 risk
             ))
 
-        # 🔥 Traffic Flood
+        # Traffic Flood
         elif pkt > THRESHOLD:
+
+            msg = f"High traffic detected from {src_ip}"
+
             alerts.append((
-                f"High traffic from {src_ip}",
+                colored_alert(msg, severity, risk),
                 severity,
                 risk
             ))
 
-        # 🔥 Burst Detection (NEW – important)
+        # Burst Detection
         elif pkt > THRESHOLD * 0.6:
+
+            msg = f"Traffic spike detected from {src_ip}"
+
             alerts.append((
-                f"Traffic spike from {src_ip}",
+                colored_alert(msg, "LOW", risk),
                 "LOW",
                 risk
             ))

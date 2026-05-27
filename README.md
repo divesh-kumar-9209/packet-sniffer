@@ -1,138 +1,207 @@
-# Packet Sniffer & Intrusion Detection System (Python)
+# 🛡️ Packet Sniffer & Intrusion Detection System
 
-## Overview
+A Python-based real-time network monitoring and intrusion detection tool that captures live traffic, detects suspicious activity, and generates alerts using custom rule-based anomaly detection.
 
-This project is a command-line based packet sniffer with integrated Intrusion Detection System (IDS) capabilities. It captures live network traffic, analyzes packets, and detects suspicious behavior using rule-based and heuristic techniques.
-
-The tool is designed to demonstrate core concepts of network monitoring, traffic analysis, and anomaly detection in a modular and scalable architecture.
+![Python](https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python)
+![Scapy](https://img.shields.io/badge/Scapy-2.5+-green?style=flat-square)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey?style=flat-square)
 
 ---
 
 ## Features
 
-### Packet Capture
 - Real-time packet sniffing using Scapy
-- Supports TCP, UDP, and ICMP protocols
-- Extracts source/destination IPs and ports
+- Port scan and traffic flood detection
+- Severity-based risk scoring system
+- Live terminal dashboard
+- Colored alerts using Colorama
+- Hostname resolution for suspicious IPs
+- JSON report generation
+- Configurable thresholds and safe IPs
+- BPF filter support
 
-### CLI Functionality
-- Interface selection
-- Traffic filtering using BPF syntax
-- Continuous capture with graceful termination
+---
 
-### Output & Logging
-- Structured and readable output
-- Timestamp and packet size display
-- Controlled output (sampling to avoid flooding)
-- Logging to file
+## Technologies Used
 
-### Intrusion Detection (IDS)
-- Packet rate monitoring
-- Port scan detection
-- Suspicious traffic identification
-- Severity classification (LOW / MEDIUM / HIGH)
-- Risk scoring model (0–100 scale)
-- Cooldown-based alert system
+Python • Scapy • Socket Programming • Packet Analysis • Colorama • JSON Reporting • BPF Filters
 
-### Configuration
-- External configuration via `config.json`
-- Adjustable thresholds and detection parameters
-- Support for safe/whitelisted IPs
+---
 
-### Reporting
-- Automatic report generation on exit
-- JSON-based statistics output
+## How It Works
+
+```text
+Live Traffic
+     ↓
+Packet Capture (Scapy)
+     ↓
+Packet Parsing & Statistics
+     ↓
+Anomaly Detection Engine
+     ↓
+Risk Scoring
+     ↓
+Dashboard + Alerts + JSON Report
+```
 
 ---
 
 ## Project Structure
+
+```text
 packet-sniffer/
 │
 ├── core/
-│ ├── sniffer.py
-│ ├── parser.py
-│ ├── stats.py
-│
 ├── detection/
-│ ├── alerts.py
-│ ├── rules.py
-│ ├── ml_model.py
-│
-├── interface/
-│ ├── gui.py
-│
 ├── utils/
-│ ├── logger.py
-│ ├── utils.py
-│
 ├── config.json
-├── config.py
 ├── main.py
+├── dashboard.py
 ├── report.py
-├── requirements.txt
-└── README.md
-
+└── requirements.txt
+```
 
 ---
 
 ## Installation
 
 ```bash
+git clone https://github.com/divesh-kumar-9209/packet-sniffer.git
+
+cd packet-sniffer
+
 pip install -r requirements.txt
+```
 
-Usage
-List Interfaces
+### Windows
+Run terminal as Administrator.
+
+### Linux
+Run with:
+
+```bash
+sudo python main.py
+```
+
+---
+
+## Usage
+
+### List Interfaces
+
+```bash
 python main.py --list
-Run Sniffer
-python main.py -i 3 -f tcp
-Example Filters
-python main.py -f tcp
-python main.py -f "port 80"
-python main.py -f "tcp and port 443"
-Stopping Execution
+```
 
-Press:
+### Start Sniffing
 
-CTRL + C
+```bash
+python main.py -i 0
 
-This will:
+python main.py -i 0 -f tcp
 
-Stop packet capture
-Generate a report file
-Sample Output
-[12:45:10] TCP | 192.168.0.100 -> 142.250.82.252 | 60B | 49909 -> 443
-[HIGH] Port scan detected from 192.168.0.100 | Risk: 85
+python main.py -i 0 -f "tcp and port 443"
+```
 
-Configuration
+### Stop Capture
 
-config.json
+```text
+Press CTRL + C to generate report.json
+```
 
+---
+
+## Sample Output
+
+```text
+[21:24:50] TCP | 142.250.82.252 (googleusercontent.com) -> 192.168.0.100 | Ports 443 -> 49909 | Size: 914 bytes
+
+=== LIVE TRAFFIC DASHBOARD ===
+
+TCP: 487
+UDP: 32
+ICMP: 5
+
+[HIGH ALERT] Port scan detected from 10.0.0.5 | Risk Score: 85/100
+
+[MEDIUM ALERT] High traffic detected from 10.0.0.9 | Risk Score: 62/100
+```
+
+---
+
+## Configuration
+
+```json
 {
   "threshold": 100,
   "port_scan_threshold": 10,
   "time_window": 10,
   "cooldown": 15,
-  "log_file": "packets.log",
-  "report_file": "report.json",
-  "safe_ips": []
+  "safe_ips": ["142.250.82.252"]
 }
-Limitations
-Detection is threshold-based and may generate false positives
-No deep packet inspection
-Not intended for production use
-Future Improvements
-Machine learning-based anomaly detection
-GUI dashboard enhancements
-Protocol-specific analysis (HTTP, DNS)
-Advanced threat classification
-License
-
-This project is intended for educational purposes.
-
+```
 
 ---
 
-# 📦 3. FINAL `requirements.txt`
+## Detection Logic
 
-```txt
-scapy
+- Port scan detection based on unique destination ports
+- Traffic flood detection using packet thresholds
+- Burst anomaly detection for sudden spikes
+- Risk scoring system with LOW / MEDIUM / HIGH severity
+- Cooldown system to reduce duplicate alerts
+
+---
+
+## BPF Filter Examples
+
+```bash
+tcp
+udp
+port 80
+port 443
+tcp and port 22
+host 192.168.1.1
+```
+
+---
+
+## Limitations
+
+- Threshold-based detection may create false positives
+- No deep packet inspection
+- Designed for controlled and educational environments
+- Windows requires Npcap for packet capture
+
+---
+
+## Planned Improvements
+
+- Machine learning anomaly detection
+- GeoIP integration
+- Flask web dashboard
+- Offline PCAP analysis
+- Email/webhook alerting
+
+---
+
+## Tested On
+
+- Windows 10 & 11 with Npcap
+- scanme.nmap.org
+
+---
+
+## Author
+
+**Divesh Kumar**  
+CSE Undergraduate | Cybersecurity Enthusiast
+
+GitHub:  
+https://github.com/divesh-kumar-9209/packet-sniffer
+
+---
+
+## Disclaimer
+
+This project is intended for educational and ethical cybersecurity research purposes only.

@@ -1,9 +1,16 @@
+# Core packet capture
+scapy==2.5.0
 
----
+# Web dashboard (planned/future)
+flask==3.0.0
 
-## Installation
+# Data analysis & ML (planned)
+pandas==2.1.4
+scikit-learn==1.3.2
+numpy==1.26.2
 
-Install dependencies using:
+# Visualization (planned)
+matplotlib==3.8.2
 
-```bash
-pip install -r requirements.txt
+# Utilities
+colorama==0.4.6

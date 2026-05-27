@@ -8,7 +8,7 @@ def update_dashboard(src, dst):
     ip_count[dst] += 1
 
 def show_dashboard(stats):
-    os.system('cls')  # Windows साफ screen
+    os.system('cls' if os.name == 'nt' else 'clear')
 
     print("=== LIVE TRAFFIC DASHBOARD ===\n")
 
